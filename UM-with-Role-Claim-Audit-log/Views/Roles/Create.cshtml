@@ -1,0 +1,76 @@
+﻿@model UM_with_Role_Claim_Audit_log.Models.ViewModels.RoleViewModel
+
+@{
+    // Set the page title for browser tab and breadcrumb navigation
+    ViewData["Title"] = "Create Role";
+}
+
+<!-- Main Container: Create Role Form -->
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <!-- Card: Role Creation Form Interface -->
+            <div class="card shadow-sm">
+
+                <!-- Card Header: Display form title with primary branding -->
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create New Role</h4>
+                </div>
+
+                <div class="card-body">
+                    <!-- Form: Submit new role data to server -->
+                    <!-- Posts to RolesController.Create action method -->
+                    <form asp-action="Create" method="post">
+
+                        @* Anti-Forgery Token: CSRF protection for secure form submission *@
+                        @Html.AntiForgeryToken()
+
+                        @* Validation Summary: Display model-level validation errors *@
+                        @* Only shows errors that are not associated with a specific property *@
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <!-- Role Name Input Field -->
+                        <div class="mb-3">
+                            <!-- Label: Automatically displays "Name" from RoleViewModel property -->
+                            <label asp-for="Name" class="form-label"></label>
+
+                            <!-- Input: Text field for entering the role name -->
+                            <!-- Examples: "Manager", "Customer", "Support Agent" -->
+                            <input asp-for="Name" class="form-control" placeholder="Enter role name" />
+
+                            <!-- Validation Message: Display field-specific validation errors -->
+                            <!-- Shows messages like "Role name is required" or "Role already exists" -->
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <!-- Form Actions: Submit and Cancel buttons -->
+                        <div class="d-flex gap-2">
+                            <!-- Submit Button: Create the new role -->
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Create
+                            </button>
+
+                            <!-- Cancel Button: Return to Roles Index without saving -->
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        // Include jQuery Unobtrusive Validation scripts for client-side validation
+        // This enables real-time validation feedback before form submission
+        // Validates required fields, string length, and custom validation attributes
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Bootstrap Icons CDN: Provides icon fonts for UI elements -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+}

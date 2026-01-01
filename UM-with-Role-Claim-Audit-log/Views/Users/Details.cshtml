@@ -1,0 +1,243 @@
+﻿@model UM_with_Role_Claim_Audit_log.Models.ViewModels.UserViewModel
+
+@{
+    // Set the page title for browser tab and navigation breadcrumb
+    ViewData["Title"] = "User Details";
+    // Check if user has Admin role for conditional UI rendering
+    var isAdminUser = Model.Roles.Contains("Admin");
+}
+
+<!-- Main Container: User Details Display Page -->
+<div class="container mt-4">
+
+    <!-- Page Header: Title and navigation -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>User Details</h2>
+        <!-- Back Button: Return to user list -->
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <!-- Card: User Information Display -->
+    <!-- Dynamic styling: Red header for Admin users, Blue for regular users -->
+    <div class="card shadow-sm">
+
+        <!-- Card Header: Shows email with Admin badge if applicable -->
+        <!-- Background color changes based on user role (danger=red for Admin, primary=blue for others) -->
+        <div class="card-header @(isAdminUser ? "bg-danger" : "bg-primary") text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-person-circle"></i> @Model.Email
+                @if (isAdminUser)
+                {
+                    <!-- Admin Badge: Visual indicator for administrator accounts -->
+                    <span class="badge bg-light text-danger ms-2">
+                        <i class="bi bi-shield-fill-check"></i> ADMIN
+                    </span>
+                }
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <!-- User Information: Definition list with all user details -->
+            <dl class="row">
+
+                <!-- User ID: Unique identifier from database -->
+                <dt class="col-sm-3">User ID</dt>
+                <dd class="col-sm-9"><code>@Model.Id</code></dd>
+
+                <!-- Email: User's email address -->
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+
+                <!-- Username: Display name for the user account -->
+                <dt class="col-sm-3">Username</dt>
+                <dd class="col-sm-9">@Model.UserName</dd>
+
+                <!-- Email Confirmed: Shows if user has verified their email -->
+                <!-- Green badge for confirmed, yellow for not confirmed -->
+                <dt class="col-sm-3">Email Confirmed</dt>
+                <dd class="col-sm-9">
+                    @if (Model.EmailConfirmed)
+                    {
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle"></i> Confirmed
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">
+                            <i class="bi bi-x-circle"></i> Not Confirmed
+                        </span>
+                    }
+                </dd>
+
+                <!-- Status: Shows if user account is Active or Disabled -->
+                <!-- Checks LockoutEnd to determine account status -->
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">
+                    @if (Model.LockoutEnd == null || Model.LockoutEnd <= DateTimeOffset.Now)
+                    {
+                        <!-- Active: User can login normally -->
+                        <span class="badge bg-success">
+                            <i class="bi bi-unlock"></i> Active
+                        </span>
+                    }
+                    else
+                    {
+                        <!-- Disabled: User is locked out until LockoutEnd date -->
+                        <span class="badge bg-danger">
+                            <i class="bi bi-lock"></i> Disabled
+                        </span>
+                    }
+                </dd>
+
+                <!-- Roles: Display all roles assigned to this user -->
+                <!-- Admin role gets red badge, other roles get blue badge -->
+                <dt class="col-sm-3">Roles</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Roles.Any())
+                    {
+                        @foreach (var role in Model.Roles)
+                        {
+                            <!-- Role Badge: Color-coded by role type -->
+                            <span class="badge @(role == "Admin" ? "bg-danger" : "bg-info") me-1">
+                                @if (role == "Admin")
+                                {
+                                    <i class="bi bi-shield-fill-check"></i>
+                                }
+                                @role
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">No roles assigned</span>
+                    }
+                </dd>
+
+                <!-- Claims: Display user permissions/claims -->
+                <!-- Special handling for Admin users (show full access message) -->
+                <!-- Regular users show individual claim badges -->
+                <dt class="col-sm-3">Claims</dt>
+                <dd class="col-sm-9">
+                    @if (isAdminUser)
+                    {
+                        @* Admin user - show "Full Claims" instead of listing individual claims *@
+                        <!-- Warning Alert: Explains Admin has unrestricted access -->
+                        <!-- Admin users bypass all permission checks, so individual claims are not tracked -->
+                        <div class="alert alert-warning mb-0">
+                            <i class="bi bi-shield-fill-check"></i>
+                            <strong>Full Claims (Admin Role)</strong>
+                            <p class="mb-0 mt-2">
+                                <i class="bi bi-info-circle"></i>
+                                Admin role has <strong>unrestricted access</strong> to all system features.
+                                Individual claims are not tracked for Admin users as they bypass all permission checks.
+                            </p>
+                        </div>
+                    }
+                    else if (Model.Claims != null && Model.Claims.Any())
+                    {
+                        @* Regular user - show individual claims *@
+                        <!-- Claims List: Each claim shown as green badge -->
+                        <ul class="list-unstyled">
+                            @foreach (var claim in Model.Claims)
+                            {
+                                <li>
+                                    <span class="badge bg-success me-1">
+                                        <i class="bi bi-key"></i> @claim
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No claims assigned</span>
+                    }
+                </dd>
+            </dl>
+
+            <hr />
+
+            <!-- Action Buttons: User management operations -->
+            <div class="d-flex gap-2 flex-wrap">
+
+                <!-- Edit User: Navigate to edit form -->
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Edit User
+                </a>
+
+                @if (!isAdminUser)
+                {
+                    @* Only show Manage Claims for non-Admin users *@
+                    <!-- Manage Claims: Assign/remove individual permissions -->
+                    <!-- Only shown for non-Admin users (Admin has full access by default) -->
+                    <a asp-controller="Claims" asp-action="Manage" asp-route-id="@Model.Id" class="btn btn-primary">
+                        <i class="bi bi-key-fill"></i> Manage Claims
+                    </a>
+                }
+                else
+                {
+                    @* For Admin users, show disabled button with tooltip *@
+                    <!-- Disabled Button: Shows why claims management isn't needed for Admin -->
+                    <!-- Tooltip explains Admin has unrestricted access -->
+                    <button class="btn btn-secondary" disabled
+                            data-bs-toggle="tooltip"
+                            title="Admin role has full access - individual claims management is not needed">
+                        <i class="bi bi-key-fill"></i> Manage Claims (Admin - Full Access)
+                    </button>
+                }
+
+                <!-- Reset Password: Navigate to password reset form -->
+                <a asp-action="ResetPassword" asp-route-id="@Model.Id" class="btn btn-info">
+                    <i class="bi bi-shield-lock"></i> Reset Password
+                </a>
+
+                <!-- Toggle Status Form: Enable/Disable user account -->
+                <!-- Uses POST method with anti-forgery token for security -->
+                <form asp-action="ToggleStatus" asp-route-id="@Model.Id" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    @if (Model.LockoutEnd == null || Model.LockoutEnd <= DateTimeOffset.Now)
+                    {
+                        <!-- Disable Button: Lock user account (sets LockoutEnd to future date) -->
+                        <!-- Confirmation dialog prevents accidental clicks -->
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to disable this user?')">
+                            <i class="bi bi-lock"></i> Disable User
+                        </button>
+                    }
+                    else
+                    {
+                        <!-- Enable Button: Unlock user account (clears LockoutEnd) -->
+                        <!-- Confirmation dialog prevents accidental clicks -->
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to enable this user?')">
+                            <i class="bi bi-unlock"></i> Enable User
+                        </button>
+                    }
+                </form>
+
+                <!-- Delete User: Navigate to delete confirmation page -->
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete User
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Bootstrap Icons CDN: Provides icon fonts used throughout the page -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <script>
+        // Initialize Bootstrap tooltips for disabled Manage Claims button
+        // Shows explanation why Admin users don't need individual claims management
+        $(document).ready(function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+}

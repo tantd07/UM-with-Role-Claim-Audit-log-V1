@@ -1,0 +1,118 @@
+﻿@model IEnumerable<UM_with_Role_Claim_Audit_log.Models.ViewModels.RoleViewModel>
+
+@{
+    // Set the page title for browser tab and navigation breadcrumb
+    ViewData["Title"] = "Role Management";
+}
+
+<!-- Main Container: Role Management Index Page -->
+<!-- Using container-fluid for full-width layout suitable for data tables -->
+<div class="container-fluid py-4">
+
+    <!-- Page Header: Title and Create Action -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <!-- Page Title: Main heading for Role Management section -->
+            <h1 class="h3 mb-0">Role Management</h1>
+        </div>
+        <div class="col-md-6 text-end">
+            <!-- Create Button: Navigate to Create Role page -->
+            <!-- Primary action for adding new roles to the system -->
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New Role
+            </a>
+        </div>
+    </div>
+
+    @* Success Message: Display after successful operations (create, update, delete) *@
+    @* TempData persists data for one request, perfect for redirect scenarios *@
+    @if (TempData["Success"] != null)
+    {
+        <!-- Success Alert: Green dismissible notification -->
+        <!-- Automatically shown after role creation, update, or claim assignment -->
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @* Error Message: Display when operations fail *@
+    @* Examples: Role already exists, cannot delete Admin role, validation errors *@
+    @if (TempData["Error"] != null)
+    {
+        <!-- Error Alert: Red dismissible notification -->
+        <!-- Shows validation errors or operation failures -->
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Card: Roles Data Table Container -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <!-- Table Wrapper: Enables horizontal scrolling on small screens -->
+            <div class="table-responsive">
+
+                <!-- Roles Table: Display all roles in the system -->
+                <!-- Uses table-hover for row highlighting on mouse hover -->
+                <table class="table table-hover align-middle">
+
+                    <!-- Table Header: Column titles -->
+                    <thead class="table-light">
+                        <tr>
+                            <!-- Column 1: Role Name (e.g., Admin, Manager, Customer) -->
+                            <th>Role Name</th>
+                            <!-- Column 2: User Count (number of users assigned to this role) -->
+                            <th>Users Count</th>
+                            <!-- Column 3: Action Buttons (Details, Delete) -->
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <!-- Table Body: Loop through all roles and display data -->
+                    <tbody>
+                        @* Iterate through each role in the Model collection *@
+                        @* Model is IEnumerable<RoleViewModel> passed from RolesController.Index *@
+                        @foreach (var role in Model)
+                        {
+                            <tr>
+                                <!-- Role Name Cell: Display role name in bold -->
+                                <td>
+                                    <strong>@role.Name</strong>
+                                </td>
+
+                                <!-- User Count Cell: Display number of users assigned -->
+                                <!-- Badge provides visual emphasis for the count -->
+                                <td>
+                                    <span class="badge bg-info">@role.UserCount users</span>
+                                </td>
+
+                                <!-- Actions Cell: Management buttons for each role -->
+                                <td>
+                                    <!-- Details Button: Navigate to role details page -->
+                                    <!-- Shows role info, assigned users, and role claims -->
+                                    <a asp-action="Details" asp-route-id="@role.Id" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i> Details
+                                    </a>
+
+                                    <!-- Delete Button: Navigate to role deletion confirmation page -->
+                                    <!-- Red styling emphasizes the destructive nature -->
+                                    <a asp-action="Delete" asp-route-id="@role.Id" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Bootstrap Icons CDN: Provides icon fonts for UI elements -->
+    <!-- Used for plus-circle (create), eye (details), and trash (delete) icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+}

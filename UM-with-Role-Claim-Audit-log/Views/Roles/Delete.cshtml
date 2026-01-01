@@ -1,0 +1,90 @@
+﻿@model UM_with_Role_Claim_Audit_log.Models.ViewModels.RoleViewModel
+
+@{
+    // Set the page title for browser tab and navigation breadcrumb
+    ViewData["Title"] = "Delete Role";
+}
+
+<!-- Main Container: Delete Role Confirmation Page -->
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <!-- Card: Role Deletion Confirmation Interface -->
+            <!-- Red border styling to emphasize the destructive nature of this action -->
+            <div class="card shadow-sm border-danger">
+
+                <!-- Card Header: Red background to warn about dangerous operation -->
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Delete Role</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- Warning Alert: Primary confirmation message -->
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>Warning!</strong> Are you sure you want to delete this role?
+                    </div>
+
+                    <!-- Role Details: Display information about the role being deleted -->
+                    <dl class="row">
+                        <!-- Role Name: Display the name of the role to be deleted -->
+                        <dt class="col-sm-4">Role Name</dt>
+                        <dd class="col-sm-8"><strong>@Model.Name</strong></dd>
+
+                        <!-- Users Count: Show how many users are assigned to this role -->
+                        <!-- Important for understanding the impact of deletion -->
+                        <dt class="col-sm-4">Users Count</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-info">@Model.UserCount users</span>
+                        </dd>
+                    </dl>
+
+                    @* Conditional Warning: Display additional alert if role has assigned users *@
+                    @* This emphasizes the impact of deletion on existing users *@
+                    @if (Model.UserCount > 0)
+                    {
+                        <!-- Danger Alert: Warn about impact on assigned users -->
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            This role has <strong>@Model.UserCount</strong> users assigned. Deleting will remove the role from all users.
+                        </div>
+                    }
+
+                    <!-- Form: Submit role deletion request to server -->
+                    <!-- Posts to RolesController.Delete action method -->
+                    <form asp-action="Delete" method="post">
+
+                        @* Anti-Forgery Token: CSRF protection for secure form submission *@
+                        @Html.AntiForgeryToken()
+
+                        @* Hidden Field: Pass role ID to controller for deletion *@
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Form Actions: Delete and Cancel buttons -->
+                        <div class="d-flex gap-2">
+                            <!-- Delete Button: Confirm and execute role deletion -->
+                            <!-- onclick confirmation provides double-check before submission -->
+                            <!-- Red styling emphasizes the destructive nature of this action -->
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+
+                            <!-- Cancel Button: Return to Roles Index without deleting -->
+                            <!-- Allows user to abort the deletion operation safely -->
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Bootstrap Icons CDN: Provides icon fonts for warning and action icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+}

@@ -1,0 +1,57 @@
+/* Navbar enhancements */
+.navbar-dark .nav-link {
+    transition: all 0.3s ease;
+}
+
+    .navbar-dark .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+
+.navbar-dark .dropdown-menu-dark {
+    background-color: #212529;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-dark .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* User badge in navbar */
+.badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    vertical-align: middle;
+}
+
+/* Alert animations */
+.alert {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dropdown menu improvements */
+.dropdown-menu {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+    transition: background-color 0.2s ease;
+}
+
+/* Active nav link */
+.navbar-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}

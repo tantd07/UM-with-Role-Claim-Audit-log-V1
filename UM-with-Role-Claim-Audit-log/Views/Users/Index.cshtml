@@ -1,0 +1,350 @@
+﻿@model IEnumerable<UM_with_Role_Claim_Audit_log.Models.ViewModels.UserViewModel>
+
+@{
+    // Set the page title for browser tab and navigation breadcrumb
+    ViewData["Title"] = "User Management";
+    // Check if current logged-in user is Admin for permission control
+    var currentUserIsAdmin = User.IsInRole("Admin");
+}
+
+<!-- Main Container: User Management Dashboard -->
+<div class="container-fluid py-4">
+
+    <!-- Page Header: Title and Create button -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-people-fill text-primary"></i> User Management
+            </h1>
+        </div>
+        <div class="col-md-6 text-end">
+            <!-- Create New User Button: Navigate to user creation form -->
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New User
+            </a>
+        </div>
+    </div>
+
+    @* Success Message: Shows green alert for successful operations *@
+    @* Example: "User created successfully", "User updated successfully" *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @* Error Message: Shows red alert for failed operations *@
+    @* Example: "Failed to delete user", "Email already exists" *@
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @* Info Message: Shows blue alert for informational messages *@
+    @* Example: "Password reset link sent", "User is already disabled" *@
+    @if (TempData["Info"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="bi bi-info-circle-fill"></i> @TempData["Info"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Card: Main users table container -->
+    <div class="card shadow-sm">
+
+        <!-- Card Header: Table title and user count -->
+        <div class="card-header bg-light">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="mb-0">
+                        <i class="bi bi-table"></i> Users List
+                    </h5>
+                </div>
+                <div class="col-md-6 text-end">
+                    <!-- Total Users Counter: Shows total number of users in system -->
+                    <small class="text-muted">
+                        Total: <strong>@Model.Count()</strong> users
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Responsive Table Wrapper: Enables horizontal scrolling on small screens -->
+            <div class="table-responsive">
+                <!-- Users Table: Displays all users with their information and actions -->
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Roles</th>
+                            <th>Email Status</th>
+                            <th>Account Status</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            // Check if current user in loop is Admin
+                            var isAdminUser = user.Roles.Contains("Admin");
+                            // Permission check: Only Admin can manage other Admins
+                            var canManage = currentUserIsAdmin || !isAdminUser;
+
+                            <!-- Table Row: Yellow background for Admin users -->
+                            <tr class="@(isAdminUser ? "table-warning" : "")">
+
+                                <!-- Email Column: Shows email with Admin badge if applicable -->
+                                <td>
+                                    <strong>@user.Email</strong>
+                                    @if (isAdminUser)
+                                    {
+                                        <!-- Admin Badge: Red badge to highlight administrator accounts -->
+                                        <span class="badge bg-danger ms-2">
+                                            <i class="bi bi-shield-fill-check"></i> ADMIN
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- Username Column: Display name -->
+                                <td>@user.UserName</td>
+
+                                <!-- Roles Column: Shows all assigned roles with color-coded badges -->
+                                <!-- Admin=Red, Manager=Yellow, User=Blue -->
+                                <td>
+                                    @if (user.Roles.Any())
+                                    {
+                                        @foreach (var role in user.Roles)
+                                        {
+                                            <!-- Role Badge: Color and icon based on role type -->
+                                            <span class="badge bg-@(role == "Admin" ? "danger" : role == "Manager" ? "warning text-dark" : "info") me-1">
+                                                <i class="bi bi-@(role == "Admin" ? "shield-fill-check" : role == "Manager" ? "person-badge" : "person")"></i>
+                                                @role
+                                            </span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted fst-italic">No roles</span>
+                                    }
+                                </td>
+
+                                <!-- Email Status Column: Shows if user verified their email -->
+                                <!-- Green for confirmed, yellow for not confirmed -->
+                                <td>
+                                    @if (user.EmailConfirmed)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Confirmed
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-exclamation-circle"></i> Not Confirmed
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- Account Status Column: Shows if user can login -->
+                                <!-- Green for active, red for disabled -->
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-unlock-fill"></i> Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-lock-fill"></i> Disabled
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- Actions Column: Management buttons for each user -->
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        @if (canManage)
+                                        {
+                                            @* Details Button: View full user information *@
+                                            <a asp-action="Details" asp-route-id="@user.Id"
+                                               class="btn btn-sm btn-info"
+                                               title="View Details"
+                                               data-bs-toggle="tooltip">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+
+                                            @* Edit Button: Modify user details and roles *@
+                                            <a asp-action="Edit" asp-route-id="@user.Id"
+                                               class="btn btn-sm btn-warning"
+                                               title="Edit User"
+                                               data-bs-toggle="tooltip">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+
+                                            @* Reset Password Button: Generate new password for user *@
+                                            <a asp-action="ResetPassword" asp-route-id="@user.Id"
+                                               class="btn btn-sm btn-primary"
+                                               title="Reset Password"
+                                               data-bs-toggle="tooltip">
+                                                <i class="bi bi-key-fill"></i>
+                                            </a>
+
+                                            @* Enable/Disable Button: Toggle user account status *@
+                                            <!-- Form submission to prevent accidental GET requests -->
+                                            <form asp-action="ToggleStatus" asp-route-id="@user.Id" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                @if (user.IsActive)
+                                                {
+                                                    <!-- Disable Button: Lock user account -->
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-secondary"
+                                                            title="Disable User"
+                                                            data-bs-toggle="tooltip"
+                                                            onclick="return confirm('Are you sure you want to disable @user.Email?')">
+                                                        <i class="bi bi-lock"></i>
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <!-- Enable Button: Unlock user account -->
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-success"
+                                                            title="Enable User"
+                                                            data-bs-toggle="tooltip"
+                                                            onclick="return confirm('Are you sure you want to enable @user.Email?')">
+                                                        <i class="bi bi-unlock"></i>
+                                                    </button>
+                                                }
+                                            </form>
+
+                                            @* Delete Button: Remove user from system *@
+                                            <a asp-action="Delete" asp-route-id="@user.Id"
+                                               class="btn btn-sm btn-danger"
+                                               title="Delete User"
+                                               data-bs-toggle="tooltip">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            @* Protected Badge: Shown when non-Admin tries to view Admin user *@
+                                            <!-- Prevents unauthorized modification of Admin accounts -->
+                                            <span class="badge bg-secondary py-2 px-3">
+                                                <i class="bi bi-shield-lock-fill"></i> Protected
+                                            </span>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                        @* Empty State: Shown when no users exist in database *@
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                                    <p class="mt-2 mb-0">No users found</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Card Footer: Shows current user role and last update time -->
+        <div class="card-footer bg-light">
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Permission Info: Explains what current user can do -->
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle"></i>
+                        @if (currentUserIsAdmin)
+                        {
+                            <span>You are viewing as <strong>Admin</strong>. You can manage all users including Admins.</span>
+                        }
+                        else
+                        {
+                            <span>Admin users are protected and cannot be modified by non-Admin users.</span>
+                        }
+                    </small>
+                </div>
+                <div class="col-md-6 text-end">
+                    <!-- Last Updated Timestamp: Shows when page was loaded -->
+                    <small class="text-muted">
+                        <i class="bi bi-clock-history"></i> Last updated: @DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Legend Card: Explains badges, buttons and security rules *@
+    <!-- Helps users understand the interface without confusion -->
+    <div class="card mt-3 shadow-sm">
+        <div class="card-header bg-light">
+            <h6 class="mb-0">
+                <i class="bi bi-info-circle"></i> Legend
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Role Badges Explanation -->
+                <div class="col-md-4">
+                    <h6>Role Badges:</h6>
+                    <ul class="list-unstyled">
+                        <li><span class="badge bg-danger">Admin</span> - System Administrator</li>
+                        <li><span class="badge bg-warning text-dark">Manager</span> - Department Manager</li>
+                        <li><span class="badge bg-info">User</span> - Regular User</li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons Explanation -->
+                <div class="col-md-4">
+                    <h6>Action Buttons:</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-eye text-info"></i> View Details</li>
+                        <li><i class="bi bi-pencil text-warning"></i> Edit User</li>
+                        <li><i class="bi bi-key-fill text-primary"></i> Reset Password</li>
+                        <li><i class="bi bi-lock text-secondary"></i> / <i class="bi bi-unlock text-success"></i> Toggle Status</li>
+                        <li><i class="bi bi-trash text-danger"></i> Delete User</li>
+                    </ul>
+                </div>
+
+                <!-- Security Rules Explanation -->
+                <div class="col-md-4">
+                    <h6>Security Notes:</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-shield-lock-fill text-secondary"></i> Admin users are protected</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Only Admins can manage Admins</li>
+                        <li><i class="bi bi-lock-fill text-danger"></i> Disabled users cannot login</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize Bootstrap tooltips for all action buttons
+        // Shows helpful hints when hovering over icons
+        $(document).ready(function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+}

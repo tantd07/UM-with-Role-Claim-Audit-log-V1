@@ -1,0 +1,133 @@
+﻿@model IEnumerable<UM_with_Role_Claim_Audit_log.Models.ViewModels.AuditLogViewModel>
+
+@{
+    ViewData["Title"] = "Audit Logs";
+    var currentPage = ViewBag.CurrentPage ?? 1;
+    var totalPages = ViewBag.TotalPages ?? 1;
+}
+
+<!--
+    Audit Logs View
+    Purpose: Display a paginated list of all system audit logs with color-coded action badges
+    Features:
+    - Timestamp display in yyyy-MM-dd HH:mm:ss format
+    - User email identification
+    - Color-coded action badges (Success, Warning, Danger, Info)
+    - Pagination controls for large datasets
+    - Responsive Bootstrap table layout
+-->
+
+<div class="container-fluid py-4">
+    <!-- Page Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="h3 mb-0">Audit Logs</h1>
+            <p class="text-muted">Track all user activities and system changes</p>
+        </div>
+    </div>
+
+    <!-- Audit Logs Table Card -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <!-- Responsive Table Wrapper -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model)
+                        {
+                            <tr>
+                                <!-- Display formatted timestamp -->
+                                <td>
+                                    <small>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</small>
+                                </td>
+
+                                <!-- Display user email -->
+                                <td>
+                                    <strong>@log.UserEmail</strong>
+                                </td>
+
+                                <!--
+                                    Display action with color-coded badge:
+                                    - Green (success): Created, Enabled
+                                    - Yellow (warning): Updated, Reset
+                                    - Red (danger): Deleted, Disabled
+                                    - Blue (info): Other actions
+                                -->
+                                <td>
+                                    @if (log.Action.Contains("Created"))
+                                    {
+                                        <span class="badge bg-success">@log.Action</span>
+                                    }
+                                    else if (log.Action.Contains("Updated") || log.Action.Contains("Reset"))
+                                    {
+                                        <span class="badge bg-warning">@log.Action</span>
+                                    }
+                                    else if (log.Action.Contains("Deleted") || log.Action.Contains("Disabled"))
+                                    {
+                                        <span class="badge bg-danger">@log.Action</span>
+                                    }
+                                    else if (log.Action.Contains("Enabled"))
+                                    {
+                                        <span class="badge bg-success">@log.Action</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info">@log.Action</span>
+                                    }
+                                </td>
+
+                                <!-- Display additional details about the action -->
+                                <td>
+                                    <small class="text-muted">@log.Details</small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!--
+                Pagination Controls
+                Only displayed when there are multiple pages (totalPages > 1)
+                Includes Previous, numbered pages, and Next buttons
+            -->
+            @if (totalPages > 1)
+            {
+                <nav aria-label="Audit logs pagination">
+                    <ul class="pagination justify-content-center mb-0">
+                        <!-- Previous Page Button -->
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">Previous</a>
+                        </li>
+
+                        <!-- Numbered Page Buttons -->
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(currentPage == i ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+
+                        <!-- Next Page Button -->
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons CSS for potential icon usage -->
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+}

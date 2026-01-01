@@ -1,0 +1,227 @@
+﻿@model UM_with_Role_Claim_Audit_log.Models.ViewModels.ManageRoleClaimsViewModel
+
+@{
+    // Set the page title for browser tab and navigation
+    ViewData["Title"] = "Manage Role Claims";
+    // Check if the current role is the Administrator role (requires special handling)
+    var isAdminRole = ViewBag.IsAdminRole ?? false;
+}
+
+<!-- Main Container: Role Claims Management Interface -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+
+            <!-- Page Header: Title and Navigation -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="bi bi-shield-check text-primary"></i> Manage Role Claims
+                </h2>
+                <!-- Back Button: Return to Role Details page -->
+                <a asp-controller="Roles" asp-action="Details" asp-route-id="@Model.RoleId" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Role Details
+                </a>
+            </div>
+
+            @* Admin Role Warning Banner: Display special instructions for Administrator role *@
+            @if (isAdminRole)
+            {
+                <div class="alert alert-warning">
+                    <i class="bi bi-shield-fill-exclamation"></i>
+                    <strong>Admin Role Configuration:</strong>
+                    All claims are selected by default for the Admin role to ensure full system access.
+                    You can uncheck specific claims if needed, but this will restrict Admin role permissions.
+                    <br />
+                    <small class="text-muted">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>Best Practice:</strong> Keep all claims checked for Admin role.
+                        If you need to restrict permissions for specific admin users,
+                        remove claims from individual user accounts instead.
+                    </small>
+                </div>
+            }
+
+            <!-- Main Card: Role Claims Management Form -->
+            <div class="card shadow-sm">
+
+                <!-- Card Header: Display role name with conditional styling for Admin role -->
+                <div class="card-header @(isAdminRole ? "bg-danger" : "bg-primary") text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tag-fill"></i> Role: @Model.RoleName
+                        @* Display Administrator badge for Admin role *@
+                        @if (isAdminRole)
+                        {
+                            <span class="badge bg-light text-danger ms-2">
+                                <i class="bi bi-shield-fill-check"></i> Administrator
+                            </span>
+                        }
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <!-- Form: Submit role claim assignments to server -->
+                    <form asp-action="Manage" method="post">
+                        @* Anti-forgery token for CSRF protection *@
+                        @Html.AntiForgeryToken()
+
+                        @* Hidden Fields: Maintain role context during form submission *@
+                        <input type="hidden" asp-for="RoleId" />
+                        <input type="hidden" asp-for="RoleName" />
+
+                        <!-- Info Banner: Explain how role claims work -->
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>About Role Claims:</strong> Claims assigned to a role will automatically apply to all users in this role.
+                        </div>
+
+                        <!-- Claims Table: Display all available claims with selection checkboxes -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 60px;">
+                                            <!-- Master Checkbox: Select/deselect all claims at once -->
+                                            <!-- For Admin role, this is checked by default -->
+                                            <input type="checkbox" id="selectAll" class="form-check-input" @(isAdminRole ? "checked" : "") />
+                                        </th>
+                                        <th>Claim Type</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @* Loop through all available claims and render table rows *@
+                                    @* Using for loop (not foreach) to maintain model binding with indexed properties *@
+                                    @for (int i = 0; i < Model.Claims.Count; i++)
+                                    {
+                                        var claim = Model.Claims[i];
+
+                                        @* Conditional Row Styling: Highlight Admin role selected claims with warning color *@
+                                        <tr class="@(isAdminRole && claim.IsSelected ? "table-warning" : "")">
+                                            <td>
+                                                @* Hidden Fields: Required for model binding during form submission *@
+                                                @* These maintain claim identity even when checkbox is unchecked *@
+                                                <input type="hidden" asp-for="Claims[i].ClaimType" />
+                                                <input type="hidden" asp-for="Claims[i].ClaimValue" />
+
+                                                <!-- Checkbox: Assign/unassign this claim to the role -->
+                                                <div class="form-check">
+                                                    <input type="checkbox"
+                                                           asp-for="Claims[i].IsSelected"
+                                                           class="form-check-input claim-checkbox"
+                                                           id="claim_@i" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <!-- Claim Type Label: Display permission identifier (e.g., "Permissions.Users.View") -->
+                                                <label for="claim_@i" class="mb-0 fw-bold">
+                                                    @claim.ClaimType
+                                                </label>
+                                            </td>
+                                            <td>
+                                                @* Display human-readable description from ViewModel *@
+                                                @* This helps users understand what each permission allows *@
+                                                <small class="text-muted">@claim.Description</small>
+                                            </td>
+                                            <td>
+                                                @* Status Badge: Visual indicator of claim assignment status *@
+                                                @* Different colors for Admin vs normal roles *@
+                                                @if (claim.IsSelected)
+                                                {
+                                                    <span class="badge @(isAdminRole ? "bg-danger" : "bg-success")">
+                                                        <i class="bi bi-check-circle"></i> @(isAdminRole ? "Admin Default" : "Assigned")
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">
+                                                        <i class="bi bi-x-circle"></i> Not Assigned
+                                                    </span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Form Actions: Cancel and Save buttons -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div>
+                                <!-- Cancel Button: Return to Roles Index without saving changes -->
+                                <a asp-controller="Roles" asp-action="Index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancel
+                                </a>
+                            </div>
+                            <div>
+                                <!-- Submit Button: Save role claim assignments -->
+                                <!-- Red styling for Admin role to emphasize caution -->
+                                <button type="submit" class="btn @(isAdminRole ? "btn-danger" : "btn-primary") btn-lg">
+                                    <i class="bi bi-save"></i> Save Role Claims
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Information Card: Important notes and best practices -->
+            <div class="card mt-4 shadow-sm">
+                <!-- Card Header: Different styling for Admin vs normal roles -->
+                <div class="card-header @(isAdminRole ? "bg-danger" : "bg-warning") text-@(isAdminRole ? "white" : "dark")">
+                    <h6 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Important Notes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        @* Context-Specific Guidance: Different notes for Admin vs normal roles *@
+                        @if (isAdminRole)
+                        {
+                            <!-- Admin Role Specific Warnings -->
+                            <li><strong>Admin Role:</strong> All claims are automatically checked for full system access.</li>
+                            <li><strong>Default Configuration:</strong> Admin role should have ALL permissions enabled.</li>
+                            <li><strong>Restriction:</strong> If you need to restrict specific admin users, manage their individual user claims instead of removing role claims.</li>
+                            <li><strong>Security:</strong> Removing claims from Admin role will affect ALL admin users globally.</li>
+                        }
+                        else
+                        {
+                            <!-- Normal Role Guidance -->
+                            <li><strong>Auto-Apply:</strong> All users in this role will automatically have these claims.</li>
+                            <li><strong>Inheritance:</strong> User-specific claims will override role claims if conflicting.</li>
+                        }
+                        <!-- Common Best Practices for All Roles -->
+                        <li><strong>Audit Trail:</strong> All role claim changes are logged in the audit log.</li>
+                        <li><strong>Best Practice:</strong> Use role claims for common permissions, user claims for exceptions.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // JavaScript: Master "Select All" Checkbox Functionality
+        // When the master checkbox is toggled, update all individual claim checkboxes
+        document.getElementById('selectAll').addEventListener('change', function() {
+            // Get all claim checkboxes on the page
+            const checkboxes = document.querySelectorAll('.claim-checkbox');
+            // Set each checkbox to match the master checkbox state
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        // JavaScript: Synchronize Master Checkbox with Individual Selections
+        // When any individual checkbox changes, update the master checkbox state
+        document.querySelectorAll('.claim-checkbox').forEach(cb => {
+            cb.addEventListener('change', function() {
+                // Get all individual checkboxes
+                const allCheckboxes = document.querySelectorAll('.claim-checkbox');
+                const selectAllCheckbox = document.getElementById('selectAll');
+                // Master checkbox is checked only if ALL individual checkboxes are checked
+                // This provides accurate visual feedback of the selection state
+                selectAllCheckbox.checked = Array.from(allCheckboxes).every(c => c.checked);
+            });
+        });
+    </script>
+}

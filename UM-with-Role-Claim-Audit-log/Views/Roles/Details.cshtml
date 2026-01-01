@@ -1,0 +1,110 @@
+﻿@model UM_with_Role_Claim_Audit_log.Models.ViewModels.RoleDetailsViewModel
+
+@{
+    // Set the page title for browser tab and navigation breadcrumb
+    ViewData["Title"] = "Role Details";
+}
+
+<!-- Main Container: Role Details Display Page -->
+<div class="container mt-4">
+
+    <!-- Page Header: Title and Navigation -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="bi bi-tag-fill"></i> Role Details
+        </h2>
+        <!-- Back Button: Return to Roles Index page -->
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <!-- Card: Role Information Display -->
+    <div class="card shadow-sm">
+
+        <!-- Card Header: Display role name as primary identifier -->
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">@Model.Name</h5>
+        </div>
+
+        <div class="card-body">
+            <!-- Definition List: Display role properties in a structured format -->
+            <dl class="row">
+
+                <!-- Role ID: Unique identifier from ASP.NET Identity system -->
+                <dt class="col-sm-3">Role ID</dt>
+                <dd class="col-sm-9"><code>@Model.Id</code></dd>
+
+                <!-- Role Name: Human-readable role identifier -->
+                <dt class="col-sm-3">Role Name</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <!-- Users in Role: List of users assigned to this role -->
+                <dt class="col-sm-3">Users in Role</dt>
+                <dd class="col-sm-9">
+                    <!-- Badge: Display total user count -->
+                    <span class="badge bg-info">@Model.UserCount users</span>
+
+                    @* Conditional List: Display user names if any users are assigned *@
+                    @if (Model.Users.Any())
+                    {
+                        <!-- User List: Shows email or username of each assigned user -->
+                        <ul class="mt-2">
+                            @foreach (var user in Model.Users)
+                            {
+                                <li>@user</li>
+                            }
+                        </ul>
+                    }
+                </dd>
+
+                <!-- Role Claims: Permissions assigned to this role -->
+                <!-- Claims automatically apply to all users in this role -->
+                <dt class="col-sm-3">Role Claims</dt>
+                <dd class="col-sm-9">
+                    @* Conditional Display: Show claims if any exist, otherwise show empty state *@
+                    @if (Model.Claims != null && Model.Claims.Any())
+                    {
+                        <!-- Claims List: Display each permission as a badge -->
+                        <ul class="list-unstyled">
+                            @foreach (var claim in Model.Claims)
+                            {
+                                <li>
+                                    <!-- Claim Badge: Green badge indicates assigned permission -->
+                                    <!-- Examples: "Permissions.Users.View", "Permissions.Roles.Create" -->
+                                    <span class="badge bg-success me-1">
+                                        <i class="bi bi-shield-check"></i> @claim
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <!-- Empty State: No claims assigned to this role yet -->
+                        <span class="text-muted">No claims assigned to this role</span>
+                    }
+                </dd>
+            </dl>
+
+            <!-- Divider: Separate information section from action buttons -->
+            <hr />
+
+            <!-- Action Buttons: Management operations for this role -->
+            <div class="d-flex gap-2 flex-wrap">
+
+                <!-- Manage Role Claims Button: Navigate to claims assignment page -->
+                <!-- This allows adding/removing permissions for this role -->
+                <a asp-controller="RoleClaims" asp-action="Manage" asp-route-id="@Model.Id" class="btn btn-primary">
+                    <i class="bi bi-shield-check"></i> Manage Role Claims
+                </a>
+
+                <!-- Delete Role Button: Navigate to role deletion confirmation page -->
+                <!-- Red styling emphasizes the destructive nature of this action -->
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete Role
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

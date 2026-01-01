@@ -1,0 +1,117 @@
+﻿@model UM_with_Role_Claim_Audit_log.Models.ViewModels.CreateUserViewModel
+
+@{
+    // Set the page title for browser tab and navigation breadcrumb
+    ViewData["Title"] = "Create User";
+}
+
+<!-- Main Container: Create User Form -->
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <!-- Card: User Creation Form Interface -->
+            <div class="card shadow-sm">
+
+                <!-- Card Header: Display form title with primary branding -->
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create New User</h4>
+                </div>
+
+                <div class="card-body">
+                    <!-- Form: Submit new user data to server -->
+                    <!-- Posts to UsersController.Create action method -->
+                    <form asp-action="Create" method="post">
+
+                        @* Anti-Forgery Token: CSRF protection for secure form submission *@
+                        @Html.AntiForgeryToken()
+
+                        @* Validation Summary: Display model-level validation errors *@
+                        @* Shows errors not associated with specific fields (e.g., "Email already exists") *@
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <!-- Email Input Field -->
+                        <div class="mb-3">
+                            <!-- Label: Automatically displays "Email" from CreateUserViewModel property -->
+                            <label asp-for="Email" class="form-label"></label>
+
+                            <!-- Input: Email address field with HTML5 validation -->
+                            <!-- This becomes the username for ASP.NET Core Identity -->
+                            <input asp-for="Email" class="form-control" />
+
+                            <!-- Validation Message: Display email-specific errors -->
+                            <!-- Examples: "Email is required", "Invalid email format", "Email already registered" -->
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Password Input Field -->
+                        <div class="mb-3">
+                            <!-- Label: Automatically displays "Password" -->
+                            <label asp-for="Password" class="form-label"></label>
+
+                            <!-- Input: Password field (masked input) -->
+                            <!-- Must meet ASP.NET Core Identity password requirements: -->
+                            <!-- - Minimum 6 characters, uppercase, lowercase, digit, special character -->
+                            <input asp-for="Password" class="form-control" />
+
+                            <!-- Validation Message: Display password-specific errors -->
+                            <!-- Examples: "Password is required", "Password must be at least 6 characters" -->
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <!-- Confirm Password Input Field -->
+                        <div class="mb-3">
+                            <!-- Label: Automatically displays "Confirm Password" -->
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+
+                            <!-- Input: Password confirmation field (must match Password) -->
+                            <!-- Uses [Compare] attribute validation to ensure passwords match -->
+                            <input asp-for="ConfirmPassword" class="form-control" />
+
+                            <!-- Validation Message: Display confirmation errors -->
+                            <!-- Examples: "Passwords do not match" -->
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email Confirmed Checkbox -->
+                        <!-- Allows admin to bypass email confirmation requirement -->
+                        <div class="mb-3 form-check">
+                            <!-- Checkbox: Mark email as verified without sending confirmation email -->
+                            <!-- Useful when creating users manually in admin panel -->
+                            <input asp-for="EmailConfirmed" class="form-check-input" />
+
+                            <!-- Label: "Email Confirmed" - indicates pre-verified status -->
+                            <label asp-for="EmailConfirmed" class="form-check-label"></label>
+                        </div>
+
+                        <!-- Form Actions: Submit and Cancel buttons -->
+                        <div class="d-flex gap-2">
+                            <!-- Submit Button: Create the new user account -->
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Create
+                            </button>
+
+                            <!-- Cancel Button: Return to Users Index without saving -->
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        // Include jQuery Unobtrusive Validation scripts for client-side validation
+        // This enables real-time validation feedback before form submission
+        // Validates: required fields, email format, password strength, password match
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Bootstrap Icons CDN: Provides icon fonts for UI elements -->
+    <!-- Used for save icon (create button) and back arrow (cancel button) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+}

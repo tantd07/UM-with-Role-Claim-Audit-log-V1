@@ -1,0 +1,70 @@
+﻿@model Dictionary<string, string>
+
+@{
+    ViewData["Title"] = "Available Claims";
+}
+
+<!--
+    Available Claims View
+    Purpose: Display a comprehensive list of all system claims that can be assigned to users
+    Model: Dictionary<string, string> where Key = Claim Type, Value = Description
+    Features:
+    - Displays claim types in monospace code format for clarity
+    - Table layout with striped rows for better readability
+    - Bootstrap Icons integration for visual enhancement
+    - Navigation back to Users list
+    Usage: Accessed by administrators to view all possible claims before assignment
+-->
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Page Header with Icon -->
+            <h2>
+                <i class="bi bi-list-check text-primary"></i> Available System Claims
+            </h2>
+            <p class="text-muted">These are the claims available in the system that can be assigned to users.</p>
+
+            <!-- Claims Table Card -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <!-- Responsive Table Wrapper for mobile devices -->
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Claim Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--
+                                    Loop through all available claims in the dictionary
+                                    Each claim is displayed with its type and human-readable description
+                                -->
+                                @foreach (var claim in Model)
+                                {
+                                    <tr>
+                                        <!-- Display claim type in code format for technical clarity -->
+                                        <td><code>@claim.Key</code></td>
+
+                                        <!-- Display human-readable description -->
+                                        <td>@claim.Value</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="mt-3">
+                <!-- Back button to return to Users list -->
+                <a asp-controller="Users" asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Users
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

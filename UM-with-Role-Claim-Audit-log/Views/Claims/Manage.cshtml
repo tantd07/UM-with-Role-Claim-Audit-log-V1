@@ -1,0 +1,420 @@
+﻿@model UM_with_Role_Claim_Audit_log.Models.ViewModels.ManageClaimsViewModel
+
+@{
+    ViewData["Title"] = "Manage User Claims";
+    var isReadOnly = ViewBag.IsReadOnly ?? false;
+    var canAssignClaims = ViewBag.CanAssignClaims ?? false;
+    var isAdminUser = ViewBag.IsAdminUser ?? false;
+}
+
+<!--
+    Manage User Claims View
+    Purpose: Allows authorized users to view and modify claims assigned to individual users
+    Model: ManageClaimsViewModel containing user info and list of available claims
+
+    Key Features:
+    - View/Edit modes based on user permissions
+    - Special handling for Admin users (read-only with all claims auto-assigned)
+    - Distinguishes between role-inherited claims and directly assigned claims
+    - Real-time Select All/Deselect All functionality
+    - Color-coded badges for claim status and source
+    - Audit logging for all claim modifications
+
+    Permission Levels:
+    1. Admin Users: Cannot modify claims (bypass all checks at authorization level)
+    2. Read-Only: Can view claims but not modify (lacks CanAssignClaims permission)
+    3. Full Access: Can add/remove directly assigned claims (has CanAssignClaims)
+
+    Security Model:
+    - Admin role bypasses all permission checks at ClaimBasedAuthorizationHandler level
+    - Role-inherited claims cannot be removed (must remove role assignment instead)
+    - Only directly assigned claims can be modified by authorized users
+    - All changes are logged in audit trail
+-->
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Page Header with Dynamic Title and Navigation -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="bi bi-shield-check text-primary"></i>
+                    @(isReadOnly ? "View User Claims" : "Manage User Claims")
+                </h2>
+                <!-- Back button to user details page -->
+                <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.UserId" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to User Details
+                </a>
+            </div>
+
+            <!--
+                Admin User Warning Banner
+                Displayed when managing claims for a user with Admin role
+                Explains that Admin users have unrestricted access regardless of claim settings
+            -->
+            @if (isAdminUser)
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-shield-fill-exclamation"></i>
+                    <strong>Admin User Configuration:</strong>
+                    All claims are automatically checked for Admin users to ensure full system access.
+                    Admin role bypasses all permission checks at the authorization level.
+                    <br />
+                    <small class="text-muted mt-2 d-block">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>Note:</strong> Unchecking claims for Admin users has no effect.
+                        Admin role always has unrestricted access regardless of individual claim assignments.
+                    </small>
+                </div>
+            }
+            else if (isReadOnly)
+            {
+                <!--
+                    Read-Only Mode Banner
+                    Displayed when current user can view but not modify claims
+                -->
+                <div class="alert alert-warning">
+                    <i class="bi bi-eye"></i>
+                    <strong>View Only Mode:</strong> You have permission to view claims but not to modify them.
+                </div>
+            }
+
+            <!-- Main Claims Management Card -->
+            <div class="card shadow-sm">
+                <!-- Card Header with User Info - Color coded based on admin status -->
+                <div class="card-header @(isAdminUser ? "bg-danger" : "bg-primary") text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-fill"></i> User: @Model.UserEmail
+                        @if (isAdminUser)
+                        {
+                            <!-- Admin badge indicating full access -->
+                            <span class="badge bg-light text-danger ms-2">
+                                <i class="bi bi-shield-fill-check"></i> Administrator - Full Access
+                            </span>
+                        }
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Claims Management Form -->
+                    <form asp-action="Manage" method="post">
+                        @Html.AntiForgeryToken()
+                        <!-- Hidden fields to maintain user context -->
+                        <input type="hidden" asp-for="UserId" />
+                        <input type="hidden" asp-for="UserEmail" />
+
+                        <!--
+                            Information Panel
+                            Explains the difference between role-inherited and directly assigned claims
+                            Content varies based on whether user is Admin or regular user
+                        -->
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>About Claims:</strong>
+                            <ul class="mb-0 mt-2">
+                                @if (isAdminUser)
+                                {
+                                    <li><span class="badge bg-danger">✓ Admin Role</span> - Has unrestricted access to all system features (bypasses all permission checks)</li>
+                                    <li>All claims are pre-selected and read-only for Admin users</li>
+                                    <li>Unchecking claims has no effect on Admin permissions</li>
+                                }
+                                else
+                                {
+                                    <li><span class="badge bg-success">✓ Inherited from Role</span> - Cannot be removed (remove role instead)</li>
+                                    <li><span class="badge bg-primary">✓ Directly Assigned</span> - Can be added/removed @(canAssignClaims ? "" : "(if you have permission)")</li>
+                                    <li>User inherits all claims from assigned roles automatically</li>
+                                }
+                            </ul>
+                        </div>
+
+                        <!-- Claims Table - Responsive wrapper for mobile devices -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <!-- Table Header - Color coded based on admin status -->
+                                <thead class="@(isAdminUser ? "table-danger" : "table-light")">
+                                    <tr>
+                                        <!--
+                                            Select All Checkbox Column
+                                            Behavior varies based on user role and permissions:
+                                            - Admin: Always checked and disabled
+                                            - Read-only: Shows "Status" text
+                                            - Edit mode: Functional Select All checkbox
+                                        -->
+                                        <th style="width: 60px;">
+                                            @if (isAdminUser)
+                                            {
+                                                @* Select All checkbox for Admin (always checked, disabled) *@
+                                                <input type="checkbox"
+                                                       id="selectAll"
+                                                       class="form-check-input"
+                                                       checked
+                                                       disabled
+                                                       title="All claims automatically selected for Admin" />
+                                            }
+                                            else if (!isReadOnly)
+                                            {
+                                                @* Select All checkbox for regular users with edit permission *@
+                                                <input type="checkbox"
+                                                       id="selectAll"
+                                                       class="form-check-input" />
+                                            }
+                                            else
+                                            {
+                                                <span>Status</span>
+                                            }
+                                        </th>
+                                        <th>Claim Type</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th>Source</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--
+                                        Claims List Loop
+                                        Each row represents a single claim with its properties
+                                        Row background color indicates:
+                                        - Yellow (table-warning): Admin user
+                                        - Green (table-success): Inherited from role
+                                        - White (default): Directly assigned or available
+                                    -->
+                                    @for (int i = 0; i < Model.Claims.Count; i++)
+                                    {
+                                        var claim = Model.Claims[i];
+                                        var rowClass = isAdminUser ? "table-warning" : (claim.IsInheritedFromRole ? "table-success" : "");
+
+                                        <tr class="@rowClass">
+                                            <td>
+                                                <!-- Hidden fields to maintain claim data during form submission -->
+                                                <input type="hidden" asp-for="Claims[i].ClaimType" />
+                                                <input type="hidden" asp-for="Claims[i].ClaimValue" />
+                                                <input type="hidden" asp-for="Claims[i].IsInheritedFromRole" />
+
+                                                <!--
+                                                    Claim Selection Checkbox
+                                                    Behavior varies based on user role and claim source:
+                                                    - Admin: Always checked and disabled with hidden field
+                                                    - Inherited: Checked and disabled (cannot modify)
+                                                    - Direct: Editable checkbox (if user has permission)
+                                                    - Read-only: Disabled based on current state
+                                                -->
+                                                <div class="form-check">
+                                                    @if (isAdminUser)
+                                                    {
+                                                        @* Admin user - all claims checked and disabled *@
+                                                        <input type="checkbox"
+                                                               checked
+                                                               disabled
+                                                               class="form-check-input"
+                                                               id="claim_@i" />
+                                                        <input type="hidden" asp-for="Claims[i].IsSelected" value="true" />
+                                                    }
+                                                    else if (isReadOnly || (claim.IsInheritedFromRole && !claim.IsSelected))
+                                                    {
+                                                        @* Read-only mode or inherited claims *@
+                                                        @if (claim.IsInheritedFromRole || claim.IsSelected)
+                                                        {
+                                                            <input type="checkbox" checked disabled class="form-check-input" id="claim_@i" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" disabled class="form-check-input" id="claim_@i" />
+                                                        }
+                                                        <input type="hidden" asp-for="Claims[i].IsSelected" />
+                                                    }
+                                                    else
+                                                    {
+                                                        @* Editable checkbox for non-inherited claims *@
+                                                        <input type="checkbox"
+                                                               asp-for="Claims[i].IsSelected"
+                                                               class="form-check-input claim-checkbox"
+                                                               id="claim_@i"
+                                                               disabled="@claim.IsInheritedFromRole" />
+                                                    }
+                                                </div>
+                                            </td>
+
+                                            <!-- Claim Type Column - Displays technical claim identifier -->
+                                            <td>
+                                                <label for="claim_@i" class="mb-0 fw-bold">
+                                                    @claim.ClaimType
+                                                </label>
+                                            </td>
+
+                                            <!-- Description Column - Human-readable claim explanation -->
+                                            <td>
+                                                <small class="text-muted">@claim.Description</small>
+                                            </td>
+
+                                            <!--
+                                                Status Column - Color-coded badge indicating current state
+                                                - Red (bg-danger): Admin full access
+                                                - Green (bg-success): Active (inherited or assigned)
+                                                - Gray (bg-secondary): Not assigned
+                                            -->
+                                            <td>
+                                                @if (isAdminUser)
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="bi bi-shield-fill-check"></i> Admin Full Access
+                                                    </span>
+                                                }
+                                                else if (claim.IsInheritedFromRole || claim.IsSelected)
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-check-circle"></i> Active
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">
+                                                        <i class="bi bi-x-circle"></i> Not Assigned
+                                                    </span>
+                                                }
+                                            </td>
+
+                                            <!--
+                                                Source Column - Indicates where the claim originates from
+                                                - Red (bg-danger): Admin role (unrestricted)
+                                                - Green (bg-success): Inherited from role assignment
+                                                - Blue (bg-primary): Directly assigned to user
+                                            -->
+                                            <td>
+                                                @if (isAdminUser)
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="bi bi-shield-fill"></i> Admin Role (Unrestricted)
+                                                    </span>
+                                                }
+                                                else if (claim.IsInheritedFromRole && !claim.IsSelected)
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-shield-fill"></i> Inherited from Role
+                                                    </span>
+                                                }
+                                                else if (claim.IsSelected)
+                                                {
+                                                    <span class="badge bg-primary">
+                                                        <i class="bi bi-person-fill"></i> Directly Assigned
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!--
+                            Form Actions Footer
+                            Left side: Cancel/Close button
+                            Right side: Save button (only shown if user has edit permissions and is not Admin)
+                        -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div>
+                                <a asp-controller="Users" asp-action="Index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle"></i> @(isReadOnly || isAdminUser ? "Close" : "Cancel")
+                                </a>
+                            </div>
+                            @if (!isReadOnly && !isAdminUser)
+                            {
+                                <!-- Save button for users with edit permissions -->
+                                <div>
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-save"></i> Save User Claims
+                                    </button>
+                                </div>
+                            }
+                            else if (isAdminUser)
+                            {
+                                <!-- Disabled button explaining why Admin claims cannot be modified -->
+                                <div>
+                                    <button type="button" class="btn btn-secondary btn-lg" disabled>
+                                        <i class="bi bi-shield-lock"></i> Claims Cannot Be Modified (Admin Role)
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!--
+                Important Notes Section
+                Provides detailed explanations about the claims system
+                Content varies based on user role (Admin vs regular user)
+            -->
+            <div class="card mt-4 shadow-sm">
+                <div class="card-header @(isAdminUser ? "bg-danger" : "bg-warning") text-@(isAdminUser ? "white" : "dark")">
+                    <h6 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Important Notes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        @if (isAdminUser)
+                        {
+                            <li><strong>Admin Privileges:</strong> Admin role has unrestricted access to all system features.</li>
+                            <li><strong>Authorization Bypass:</strong> Admin users bypass all permission checks at the code level (ClaimBasedAuthorizationHandler).</li>
+                            <li><strong>Claims Display:</strong> All claims are shown as checked for reference, but unchecking them has no effect on Admin permissions.</li>
+                            <li><strong>Security Model:</strong> Admin role is hard-coded to have full access regardless of individual claim assignments.</li>
+                        }
+                        else
+                        {
+                            <li><strong>Role Claims:</strong> Automatically inherited from assigned roles. Cannot be removed here (remove role instead).</li>
+                            <li><strong>User Claims:</strong> Additional permissions specific to this user only.</li>
+                            <li><strong>Combined Effect:</strong> User gets ALL claims from roles + user-specific claims.</li>
+                        }
+                        <li><strong>Audit Trail:</strong> All claim changes are logged in the audit log.</li>
+                        @if (isReadOnly)
+                        {
+                            <li><strong>View Only:</strong> You need "CanAssignClaims" or "CanManageClaims" permission to modify claims.</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons CSS for visual enhancements -->
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <!--
+        Client-Side JavaScript
+        Handles Select All functionality and UI interactions
+        Only active for non-Admin users
+    -->
+    <script>
+        $(document).ready(function() {
+            // Check if current user is Admin (Admin users don't need Select All functionality)
+            var isAdminUser = @(isAdminUser.ToString().ToLower());
+
+            if (!isAdminUser) {
+                // Select All checkbox functionality
+                // When clicked, toggles all non-disabled claim checkboxes
+                $('#selectAll').on('change', function() {
+                    $('.claim-checkbox').not(':disabled').prop('checked', this.checked);
+                });
+
+                // Update "Select All" checkbox state when individual checkboxes change
+                // If all checkboxes are checked, "Select All" is checked; otherwise, it's unchecked
+                $('.claim-checkbox').on('change', function() {
+                    var allCheckboxes = $('.claim-checkbox').not(':disabled');
+                    var allChecked = allCheckboxes.length === allCheckboxes.filter(':checked').length;
+                    $('#selectAll').prop('checked', allChecked);
+                });
+
+                // Console logging for debugging purposes
+                // Logs which claim was toggled and its new state
+                $('.claim-checkbox').on('change', function() {
+                    console.log('Claim toggled:', this.id, this.checked);
+                });
+            }
+        });
+    </script>
+}

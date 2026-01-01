@@ -1,0 +1,401 @@
+﻿@{
+    ViewData["Title"] = "Home - User Management System";
+}
+
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-3 fw-bold mb-3">
+            <i class="bi bi-people-fill text-primary"></i> User Management System
+        </h1>
+        <p class="lead text-muted mb-4">
+            Complete Role-Based Access Control (RBAC) with Claims &amp; Audit Logging
+        </p>
+        <p class="fs-5">
+            Enterprise-grade ASP.NET Core MVC solution for managing users, roles, and permissions
+        </p>
+    </div>
+
+    <!-- Key Features -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">
+                <i class="bi bi-star-fill text-warning"></i> Key Features
+            </h2>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-people display-4 text-primary"></i>
+                    </div>
+                    <h5 class="card-title">User Management</h5>
+                    <p class="card-text text-muted">
+                        Complete CRUD operations for users with email confirmation, account activation/deactivation, and password reset functionality.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-shield-check display-4 text-success"></i>
+                    </div>
+                    <h5 class="card-title">Role-Based Authorization</h5>
+                    <p class="card-text text-muted">
+                        Flexible role management system with hierarchical permissions. Create, edit, and assign roles to users dynamically.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-key-fill display-4 text-warning"></i>
+                    </div>
+                    <h5 class="card-title">Claims-Based Security</h5>
+                    <p class="card-text text-muted">
+                        Granular permission control using claims. Assign specific permissions to roles or individual users for fine-grained access control.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-clock-history display-4 text-info"></i>
+                    </div>
+                    <h5 class="card-title">Audit Logging</h5>
+                    <p class="card-text text-muted">
+                        Complete audit trail of all user actions, role changes, and permission modifications with timestamps and user tracking.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-lock-fill display-4 text-danger"></i>
+                    </div>
+                    <h5 class="card-title">ASP.NET Core Identity</h5>
+                    <p class="card-text text-muted">
+                        Built on Microsoft&rsquo;s ASP.NET Core Identity framework ensuring industry-standard security and authentication.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-palette-fill display-4 text-purple"></i>
+                    </div>
+                    <h5 class="card-title">Modern UI/UX</h5>
+                    <p class="card-text text-muted">
+                        Clean, responsive Bootstrap 5 interface with Bootstrap Icons. Works perfectly on desktop, tablet, and mobile devices.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="alert alert-success border-success shadow-sm" role="alert">
+                <h4 class="alert-heading">
+                    <i class="bi bi-shield-check-fill"></i> Enterprise-Grade Security Built-In
+                </h4>
+                <p class="mb-0">
+                    This project implements <strong>OWASP Top 10 2021 protections</strong>, including:
+                </p>
+                <ul class="mb-0 mt-2">
+                    <li><strong>XSS Prevention</strong> - Razor auto-encoding + Content Security Policy</li>
+                    <li><strong>SQL Injection Protection</strong> - EF Core parameterized queries</li>
+                    <li><strong>CSRF Protection</strong> - Anti-forgery tokens on all forms</li>
+                    <li><strong>Clickjacking Prevention</strong> - X-Frame-Options security headers</li>
+                    <li><strong>Secure Sessions</strong> - HttpOnly + Secure cookies</li>
+                    <li><strong>Password Security</strong> - PBKDF2-HMAC-SHA256 hashing with salt</li>
+                    <li><strong>Audit Trail</strong> - Complete activity logging for compliance</li>
+                </ul>
+                <hr>
+                <p class="mb-0 small text-muted">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Production-Ready Security:</strong> All security headers, HTTPS redirection, and authentication configured out-of-the-box. Just deploy!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Specifications -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">
+                <i class="bi bi-code-square text-primary"></i> Technical Specifications
+            </h2>
+        </div>
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong><i class="bi bi-check-circle-fill text-success"></i> Framework:</strong>
+                            <span>ASP.NET Core MVC (.NET 9)</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong><i class="bi bi-check-circle-fill text-success"></i> Language:</strong>
+                            <span>C# 13.0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong><i class="bi bi-check-circle-fill text-success"></i> Authentication:</strong>
+                            <span>ASP.NET Core Identity</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong><i class="bi bi-check-circle-fill text-success"></i> Database:</strong>
+                            <span>Entity Framework Core with SQL Server</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong><i class="bi bi-check-circle-fill text-success"></i> Frontend:</strong>
+                            <span>Bootstrap 5 + Bootstrap Icons</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong><i class="bi bi-check-circle-fill text-success"></i> Architecture:</strong>
+                            <span>MVC Pattern with ViewModels</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- What's Included -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">
+                <i class="bi bi-box-seam text-success"></i> What&rsquo;s Included
+            </h2>
+        </div>
+        <div class="col-lg-10 mx-auto">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success me-3 fs-5"></i>
+                        <div>
+                            <strong>Complete Source Code</strong>
+                            <p class="text-muted mb-0">Full access to all controllers, models, and views</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success me-3 fs-5"></i>
+                        <div>
+                            <strong>Database Migrations</strong>
+                            <p class="text-muted mb-0">Ready-to-use EF Core migrations</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success me-3 fs-5"></i>
+                        <div>
+                            <strong>Seed Data</strong>
+                            <p class="text-muted mb-0">Pre-configured admin account and sample data</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success me-3 fs-5"></i>
+                        <div>
+                            <strong>Documentation</strong>
+                            <p class="text-muted mb-0">Setup guide and implementation notes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success me-3 fs-5"></i>
+                        <div>
+                            <strong>Production-Ready</strong>
+                            <p class="text-muted mb-0">Tested and ready for deployment</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success me-3 fs-5"></i>
+                        <div>
+                            <strong>Lifetime Updates</strong>
+                            <p class="text-muted mb-0">Free updates and bug fixes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Use Cases -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">
+                <i class="bi bi-lightbulb-fill text-warning"></i> Perfect For
+            </h2>
+        </div>
+        <div class="col-lg-10 mx-auto">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="card border-primary h-100">
+                        <div class="card-body">
+                            <h5><i class="bi bi-building"></i> Enterprise Applications</h5>
+                            <p class="text-muted mb-0">Multi-tenant systems requiring sophisticated access control</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card border-success h-100">
+                        <div class="card-body">
+                            <h5><i class="bi bi-speedometer2"></i> SaaS Products</h5>
+                            <p class="text-muted mb-0">Software-as-a-Service platforms with role-based features</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card border-info h-100">
+                        <div class="card-body">
+                            <h5><i class="bi bi-cart-check"></i> E-commerce Sites</h5>
+                            <p class="text-muted mb-0">Online stores with customer and admin role management</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card border-warning h-100">
+                        <div class="card-body">
+                            <h5><i class="bi bi-mortarboard"></i> Learning Projects</h5>
+                            <p class="text-muted mb-0">Study modern ASP.NET Core security implementation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card bg-primary text-white shadow-lg">
+                <div class="card-body text-center py-5">
+                    <h2 class="mb-3">Ready to Get Started?</h2>
+                    <p class="lead mb-4">
+                        Stop building authentication from scratch. Get a professional, tested solution today.
+                    </p>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <a asp-controller="Users" asp-action="Index" class="btn btn-light btn-lg px-5">
+                                <i class="bi bi-people"></i> Manage Users
+                            </a>
+                            <a asp-controller="Roles" asp-action="Index" class="btn btn-outline-light btn-lg px-5">
+                                <i class="bi bi-shield-check"></i> Manage Roles
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login"
+                               class="btn btn-light btn-lg px-5 demo-button"
+                               data-bs-toggle="popover"
+                               data-bs-trigger="hover focus"
+                               data-bs-placement="top"
+                               data-bs-html="true"
+                               data-bs-content="<div class='text-start'><h6 class='mb-2'><i class='bi bi-key-fill text-primary'></i> <strong>Demo Credentials</strong></h6><div class='small mb-2'><strong>Email:</strong> <code>admin@demo.com</code></div><div class='small mb-2'><strong>Password:</strong> <code>Admin@123</code></div><div class='small mb-2'><strong>Role:</strong> <span class='badge bg-danger'>Admin</span></div><hr class='my-2'/><div class='small text-muted mb-2'><i class='bi bi-info-circle'></i> This live demo runs the same codebase you will receive after purchase.</div><div class='small'><span class='badge bg-info text-dark'><i class='bi bi-info-circle'></i> MVC-based solution (no JWT, no API, easy to customize)</span></div></div>">
+                                <i class="bi bi-box-arrow-in-right"></i> Try Demo
+                            </a>
+                            <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-light btn-lg px-5">
+                                <i class="bi bi-person-plus"></i> Register
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Developer Credit Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 bg-light">
+                <div class="card-body py-4">
+                    <div class="text-center">
+                        <p class="mb-2 text-muted">
+                            <i class="bi bi-code-slash"></i> Designed &amp; Developed by
+                        </p>
+                        <h4 class="mb-2">
+                            <i class="bi bi-person-badge-fill text-primary"></i>
+                            <strong class="text-primary">TanTran</strong>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+          integrity="sha384-PP/A5cdKlXxXnvuZRLXz9YlLVnQ8nOsWGOGLSKVIHMQE+2YAR5Q5Ul4VBR"
+          crossorigin="anonymous">
+    <style>
+        .text-purple {
+            color: #6f42c1;
+        }
+
+        .border-purple {
+            border-color: #6f42c1 !important;
+        }
+
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+            }
+
+        /* Popover custom styling */
+        .popover {
+            max-width: 350px;
+        }
+
+        .popover-body {
+            padding: 1rem;
+        }
+
+            .popover-body code {
+                background-color: #f8f9fa;
+                padding: 2px 6px;
+                border-radius: 3px;
+                color: #212529;
+            }
+    </style>
+
+    <script>
+        // Initialize Bootstrap 5 popovers
+        document.addEventListener('DOMContentLoaded', function () {
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl);
+            });
+        });
+    </script>
+}

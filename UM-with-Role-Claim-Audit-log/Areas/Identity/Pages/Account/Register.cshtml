@@ -1,0 +1,100 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register - User Management System";
+}
+
+<div class="container">
+    <div class="row justify-content-center py-5">
+        <div class="col-lg-5 col-md-7">
+            <!-- Register Card -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="bi bi-person-plus-fill text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h2 class="fw-bold mb-2">Create Account</h2>
+                        <p class="text-muted">Register for a new account</p>
+                    </div>
+
+                    <!-- Register Form -->
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label">
+                                <i class="bi bi-envelope-fill text-primary"></i> Email Address
+                            </label>
+                            <input asp-for="Input.Email" class="form-control form-control-lg" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Password" class="form-label">
+                                <i class="bi bi-lock-fill text-primary"></i> Password
+                            </label>
+                            <input asp-for="Input.Password" class="form-control form-control-lg" autocomplete="new-password" aria-required="true" placeholder="Enter password" />
+                            <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.ConfirmPassword" class="form-label">
+                                <i class="bi bi-lock-fill text-primary"></i> Confirm Password
+                            </label>
+                            <input asp-for="Input.ConfirmPassword" class="form-control form-control-lg" autocomplete="new-password" aria-required="true" placeholder="Confirm password" />
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-person-plus"></i> Register
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Back to Login Link -->
+                    <div class="text-center">
+                        <hr class="my-4">
+                        <p class="text-muted mb-0">
+                            Already have an account?
+                            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="text-decoration-none fw-bold">
+                                <i class="bi bi-box-arrow-in-right"></i> Sign In
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Requirements Info -->
+            <div class="card border-0 bg-light mt-4">
+                <div class="card-body py-3">
+                    <h6 class="mb-3">
+                        <i class="bi bi-shield-check text-primary"></i> Password Requirements
+                    </h6>
+                    <ul class="small text-muted mb-0">
+                        <li>Minimum 6 characters</li>
+                        <li>At least one uppercase letter (A-Z)</li>
+                        <li>At least one lowercase letter (a-z)</li>
+                        <li>At least one digit (0-9)</li>
+                        <li>At least one special character (@@#$%^&*)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature Highlights -->
+            <div class="text-center mt-4">
+                <p class="text-muted small mb-2">
+                    <i class="bi bi-shield-check text-success"></i> Role-Based Access Control &nbsp;|&nbsp;
+                    <i class="bi bi-key-fill text-warning"></i> Claims Management &nbsp;|&nbsp;
+                    <i class="bi bi-clock-history text-info"></i> Audit Logging
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

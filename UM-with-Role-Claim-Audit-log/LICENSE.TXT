@@ -1,0 +1,112 @@
+﻿COMMERCIAL LICENSE AGREEMENT
+
+User Management System with Roles, Claims & Audit Log
+© 2025 [Your Name/Company]. All rights reserved.
+
+This source code is licensed for commercial use.
+
+================================================================================
+
+GRANT OF LICENSE
+================================================================================
+By purchasing or using this software, you are granted a non-exclusive, 
+non-transferable license to use this software subject to the terms below.
+
+================================================================================
+
+PERMITTED USES:
+================================================================================
+✅ Use in personal projects (unlimited)
+✅ Use in commercial projects (unlimited)
+✅ Use in client projects (unlimited)
+✅ Modification and customization
+✅ Integration into your products
+✅ Use in SaaS applications
+✅ Internal company use
+✅ Educational purposes
+
+================================================================================
+
+RESTRICTIONS:
+================================================================================
+❌ Reselling this source code as-is or with modifications
+❌ Redistributing on code marketplaces (Gumroad, Envato, CodeCanyon, etc.)
+❌ Sharing with non-purchasers or third parties
+❌ Claiming original authorship
+❌ Removing or modifying this license file
+❌ Sublicensing to third parties without permission
+❌ Bundling with competing products
+
+================================================================================
+
+THIRD-PARTY COMPONENTS:
+================================================================================
+This software uses the following open-source components:
+
+- ASP.NET Core 9 (MIT License) - https://github.com/dotnet/aspnetcore
+- Entity Framework Core 9 (MIT License) - https://github.com/dotnet/efcore
+- Bootstrap 5 (MIT License) - https://getbootstrap.com
+- jQuery (MIT License) - https://jquery.org
+- Bootstrap Icons (MIT License) - https://icons.getbootstrap.com
+
+All third-party components retain their original licenses.
+
+================================================================================
+
+WARRANTY DISCLAIMER:
+================================================================================
+THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE 
+OR OTHER DEALINGS IN THE SOFTWARE.
+
+================================================================================
+
+SUPPORT:
+================================================================================
+- Email support is provided for setup and configuration questions
+- Bug fixes and security patches are provided as needed
+- Feature requests will be considered for future updates
+- Custom development services are available separately
+
+================================================================================
+
+UPDATES & MAINTENANCE:
+================================================================================
+- Free bug fixes and security updates for 1 year from purchase date
+- Access to documentation and setup guides
+- Major version upgrades may require additional purchase
+- GitHub repository access for issue tracking
+
+================================================================================
+
+TERMINATION:
+================================================================================
+This license is effective upon purchase and remains in effect unless terminated 
+due to violation of these terms. Upon termination, you must cease all use of 
+the software and destroy all copies.
+
+================================================================================
+
+CONTACT:
+================================================================================
+For questions about licensing, custom development, or support:
+- Email: tantran7183@gmail.com
+- GitHub: https://github.com/tantd07/UM-with-Role-Claim-Audit-log
+- Website: [Your Website]
+
+================================================================================
+
+ACCEPTANCE:
+================================================================================
+By using this software, you acknowledge that you have read this license 
+agreement and agree to be bound by its terms and conditions.
+
+================================================================================
+
+Last Updated: December 2025
+Version: 1.0.0

@@ -1,0 +1,119 @@
+﻿@model UM_with_Role_Claim_Audit_log.Models.ViewModels.EditUserViewModel
+
+@{
+    // Set the page title for browser tab and navigation breadcrumb
+    ViewData["Title"] = "Edit User";
+}
+
+<!-- Main Container: Edit User Form Page -->
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <!-- Card: User Editing Interface -->
+            <!-- Blue header for edit operations (less critical than delete) -->
+            <div class="card shadow-sm">
+
+                <!-- Card Header: Blue background for standard edit operation -->
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit User</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- Form: Submit user changes to server -->
+                    <!-- Posts to UsersController.Edit action method -->
+                    <form asp-action="Edit" method="post">
+
+                        @* Anti-Forgery Token: CSRF protection for secure form submission *@
+                        @Html.AntiForgeryToken()
+
+                        @* Hidden Field: Pass user ID to controller to identify which user to update *@
+                        <input type="hidden" asp-for="Id" />
+
+                        @* Validation Summary: Display model-level validation errors *@
+                        @* Shows errors that don't belong to specific fields *@
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <!-- Email Field: User's email address (required) -->
+                        <!-- Used for login and communication with the user -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            @* Field-level validation: Shows email-specific errors (required, format) *@
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email Confirmed Checkbox: Manual email verification toggle -->
+                        <!-- Allows admin to manually verify user email without requiring link click -->
+                        <!-- Useful for: bulk imports, trusted users, fixing verification issues -->
+                        <div class="mb-3 form-check">
+                            <input asp-for="EmailConfirmed" class="form-check-input" />
+                            <label asp-for="EmailConfirmed" class="form-check-label"></label>
+                        </div>
+
+                        <!-- Role Assignment Section: Multi-select role checkboxes -->
+                        <!-- This will: -->
+                        <!-- - Show all available system roles -->
+                        <!-- - Pre-check roles currently assigned to user -->
+                        <!-- - Allow admin to add/remove roles -->
+                        <!-- - Update user's permissions based on selected roles -->
+                        <div class="mb-3">
+                            <label class="form-label">Assign Roles</label>
+
+                            @* Loop through all available roles in the system *@
+                            @foreach (var role in Model.AllRoles)
+                            {
+                                <div class="form-check">
+                                    @* Checkbox: Role selection *@
+                                    @* name="SelectedRoles" creates an array of selected role names *@
+                                    @* Checked if role exists in user's current roles *@
+                                    <input type="checkbox"
+                                           name="SelectedRoles"
+                                           value="@role"
+                                           class="form-check-input"
+                                           id="role_@role"
+                                           @(Model.SelectedRoles.Contains(role) ? "checked" : "") />
+                                    <label class="form-check-label" for="role_@role">
+                                        @role
+                                    </label>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Form Actions: Save and Cancel buttons -->
+                        <div class="d-flex gap-2">
+
+                            <!-- Save Button: Submit form and update user -->
+                            <!-- This will: -->
+                            <!-- - Update user's email -->
+                            <!-- - Update email confirmation status -->
+                            <!-- - Update assigned roles -->
+                            <!-- - Log changes in audit log -->
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+
+                            <!-- Cancel Button: Return to Users Index without saving -->
+                            <!-- Allows admin to abort the edit operation safely -->
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* Validation Scripts: Client-side validation using jQuery Validate *@
+    @* Provides instant feedback before form submission *@
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Bootstrap Icons CDN: Provides icon fonts for save and back icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+}
