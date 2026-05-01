@@ -9,10 +9,8 @@ No hardcoded policies - permissions are evaluated at runtime based on roles and 
 
 ---
 
-## 🔗 Live Demo & Video Walkthrough
-
-- 🌐 **Live Demo (V1.0)**: https://your-demo-v1-url
-- 🎥 **Video Walkthrough**: https://your-video-demo-url
+## 🔗 Video Walkthrough
+- 🎥 **Video Walkthrough**: https://www.youtube.com/watch?v=LHoBcPcErH8&t=42s
 
 > You can explore the full system, test roles, claims, and audit logs before purchasing.
 
@@ -841,8 +839,8 @@ dotnet ef database update
 ## 📧 Support & Updates
 
 ### Getting Help
-- **Email Support:** [Your Email]
-- **GitHub Issues:** [https://github.com/tantd07/UM-with-Role-Claim-Audit-log/issues](https://github.com/tantd07/UM-with-Role-Claim-Audit-log/issues)
+- **Email Support:** tantran7183@gmail.com
+- **GitHub Issues:** https://github.com/tantd07/UM-with-Role-Claim-Audit-log-V1/issues
 - **Documentation:** This README + inline code comments
 
 ### License
@@ -951,7 +949,7 @@ Designed for production environments and CI/CD pipelines.
 Thank you for purchasing this project! Your support helps us continue improving and adding new features.
 
 ### Show Your Support:
-- ⭐ **Star on GitHub** - [github.com/tantd07/UM-with-Role-Claim-Audit-log](https://github.com/tantd07/UM-with-Role-Claim-Audit-log)
+- ⭐ **Star on GitHub** - https://github.com/tantd07/UM-with-Role-Claim-Audit-log-V1
 - 📣 **Leave a Review** on Gumroad - Help others discover this project
 - 💬 **Send Feedback** - Your suggestions shape future updates
 - 🐛 **Report Issues** - Help us improve quality
