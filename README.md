@@ -861,10 +861,10 @@ This project is licensed under a **Commercial License** - see [LICENSE.txt](LICE
 
 ## 💰 Version & Pricing Overview
 
-- **V1.0 ($39)** – Core authorization foundation  
+- **V1.0 (free)** – Core authorization foundation  
   Best for internal tools, admin panels, and monolithic MVC apps.
 
-- **V2.0 ($69 – coming soon)** – Production-ready platform  
+- **V2.0 ($39 – coming soon)** – Production-ready platform  
   Recommended for SaaS, API-based systems, and frontend/mobile integrations.
 
 
