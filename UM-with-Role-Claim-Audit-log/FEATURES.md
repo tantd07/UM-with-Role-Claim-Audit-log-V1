@@ -991,7 +991,7 @@ Step 1: Developer adds to ClaimDefinitionsService.cs { "CanApproveInvoices", "Ca
 
 For questions about specific features or feature requests:
 - **Email**: tantran7183@gmail.com
-- **GitHub Issues**: https://github.com/tantd07/UM-with-Role-Claim-Audit-log/issues
+- **GitHub Issues**: https://github.com/tantd07/UM-with-Role-Claim-Audit-log-V1/issues
 - **Documentation**: See README.md for setup and troubleshooting
 
 ---
