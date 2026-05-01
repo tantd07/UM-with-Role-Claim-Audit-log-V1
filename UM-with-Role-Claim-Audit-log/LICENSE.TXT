@@ -96,7 +96,7 @@ CONTACT:
 ================================================================================
 For questions about licensing, custom development, or support:
 - Email: tantran7183@gmail.com
-- GitHub: https://github.com/tantd07/UM-with-Role-Claim-Audit-log
+- GitHub: https://github.com/tantd07/UM-with-Role-Claim-Audit-log-V1
 - Website: [Your Website]
 
 ================================================================================
