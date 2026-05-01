@@ -1,7 +1,7 @@
 ﻿COMMERCIAL LICENSE AGREEMENT
 
 User Management System with Roles, Claims & Audit Log
-© 2025 [Your Name/Company]. All rights reserved.
+© 2025 [Tan Tran]. All rights reserved.
 
 This source code is licensed for commercial use.
 
@@ -97,7 +97,6 @@ CONTACT:
 For questions about licensing, custom development, or support:
 - Email: tantran7183@gmail.com
 - GitHub: https://github.com/tantd07/UM-with-Role-Claim-Audit-log-V1
-- Website: [Your Website]
 
 ================================================================================
 
